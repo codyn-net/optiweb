@@ -1,0 +1,382 @@
+<h1>Status</h1>
+<? if ($this->jobs) { ?>
+<table class='status'>
+	<thead>
+		<tr>
+			<th></th>
+			<th>Name</th>
+			<th>User</th>
+			<th>Started</th>
+			<th>Progress</th>
+			<th></th>
+			<th></th>
+		</tr>
+	</thead>
+	<colgroup>
+		<col>
+		<col>
+		<col>
+		<col>
+		<col width='150px'>
+		<col width='20px'>
+		<col>
+	</colgroup>
+	<? foreach ($this->jobs as $job) { ?>
+	<tr class='header'>
+		<td colspan='7'></td>
+	</tr>
+	<tr class='short_description' onclick='toggle_description(<?= $job->id ?>)'>
+		<td class='left'></td>
+		<td class='name'><?= $job->name ?></td>
+		<td class='user'><?= $job->user ?></td>
+		<td class='started'><?= english_date($job->started) ?></td>
+		<td class='progress'>
+			<div class='progress'>
+				<img class='progress' src='images/progress.png' height='20px' width='<?= intval($job->progress * 100) ?>%'/>
+			</div>
+		</td>
+		<td class='progress_num'>
+			<?= number_format($job->progress * 100, 2) ?>&nbsp;%
+		</td>
+		<td class='right'></td>
+	</tr>
+	<tr class='long_description long_description_<?= $job->id ?>'>
+		<td class='left'></td>
+		<td class='title'>Priority:</td>
+		<td colspan='4'><?= $job->priority ?></td>
+		<td class='right'></td>
+	</tr>
+	<tr class='long_description long_description_<?= $job->id ?>'>
+		<td class='left'></td>
+		<td class='title'>Tasks:</td>
+		<td colspan='4'><span class='taskssuccess'><?= $job->taskssuccess ?></span>/<span class='tasksfailed'><?= $job->tasksfailed ?></span></td>
+		<td class='right'></td>
+	</tr>
+	<tr class='long_description long_description_<?= $job->id ?>'>
+		<td class='left'></td>
+		<td class='title'>Runtime:</td>
+		<td colspan='4'><?= number_format($job->runtime, 2) ?> seconds</td>
+		<td class='right'></td>
+	</tr>
+	<tr class='long_description long_description_<?= $job->id ?>'>
+		<td class='left'></td>
+		<td class='title'>Duration:</td>
+		<td colspan='4'><?= english_duration($job->lastupdate - $job->started) ?></td>
+		<td class='right'></td>
+	</tr>
+	<? } ?>
+</table>
+<script type='text/javascript'>
+	function toggle_description(id)
+	{
+		var ret = $('tr.long_description_' + id);
+
+		$A(ret).each(function (item) {
+			if (item.style.display != 'table-row')
+			{
+				item.style.display = 'table-row';
+			}
+			else
+			{
+				item.style.display = '';
+			}
+		});
+	}
+
+	toggle_description(10);
+</script>
+<? } else { ?>
+<p>There are no jobs running at the moment.</p>
+<? } ?>
+<h1>History</h1>
+<h2>Day</h2>
+<div class='plot'>
+	<input type='button' value='&lt;' onclick='previous_day()'/><select id='day_day'>
+		<? for ($i = 0; $i < 31; $i++) { ?>
+		<option value='<?= $i ?>' <?= $i == date('j') - 1 ? 'selected="selected"' : '' ?>><?= $i + 1 ?></option>
+		<? } ?>
+	</select><select id='day_month'>
+		<? for ($i = 0; $i < 12; $i++) { ?>
+		<option value='<?= $i ?>' <?= $i == date('n') - 1 ? 'selected="selected"' : '' ?>><?= $this->month($i) ?></option>
+		<? } ?>
+	</select><select id='day_year'>
+		<? for ($i = 0; $i < 20; $i++) { ?>
+		<option value='<?= date('Y') - $i ?>'><?= date('Y') - $i ?></option>
+		<? } ?>
+	</select><input type='button' value='&gt;' onclick='next_day()'/>
+	
+	<input type='button' value='Go!' onclick='refresh_day()'/><input type='button' value='Today!' onclick='today_day()'/>
+	<canvas id='day_plot' width='800px' height='200px'>
+	</canvas>
+</div>
+
+<h2>Week</h2>
+<div class='plot'>
+	<input type='button' value='&lt;' onclick='prev_week()'/><select id='week_week'>
+		<? for ($i = 0; $i < 52; $i++) { ?>
+		<option value='<?= $i ?>' <?= $i == date('W') - 1 ? 'selected="selected"' : '' ?>><?= $i + 1 ?></option>
+		<? } ?>
+	</select><select id='week_year'>
+		<? for ($i = 0; $i < 20; $i++) { ?>
+		<option value='<?= date('Y') - $i ?>'><?= date('Y') - $i ?></option>
+		<? } ?>
+	</select><input type='button' value='&gt;' onclick='next_week()'/>
+	<input type='button' value='Go!' onclick='refresh_week()'/><input type='button' value='This week!' onclick='this_week()'/>
+	<canvas id='week_plot' width='800px' height='200px'>
+	</canvas>
+</div>
+
+<h2>Month</h2>
+<div class='plot'>
+	<input type='button' value='&lt;' onclick='prev_month()'/><select id='month_month'>
+		<? for ($i = 0; $i < 12; $i++) { ?>
+		<option value='<?= $i ?>' <?= $i == date('n') - 1 ? 'selected="selected"' : '' ?>><?= $this->month($i) ?></option>
+		<? } ?>
+	</select><select id='month_year'>
+		<? for ($i = 0; $i < 20; $i++) { ?>
+		<option value='<?= date('Y') - $i ?>'><?= date('Y') - $i ?></option>
+		<? } ?>
+	</select><input type='button' value='&gt;' onclick='next_month()'/>
+	<input type='button' value='Go!' onclick='refresh_month()'/><input type='button' value='This month!' onclick='this_month()'/>
+	<canvas id='month_plot' width='800px' height='200px'>
+	</canvas>
+</div>
+
+<script type='text/javascript'>
+	var plots = {};
+
+	Event.observe(window, 'load', function() {
+		plots.day = new StatusPlot('day_plot');
+		plots.week = new StatusPlot('week_plot');
+		plots.month = new StatusPlot('month_plot');
+
+		refresh_day();
+		refresh_month();
+		refresh_week();
+	});
+
+	function refresh_day()
+	{
+		var day = $('day_day');
+		day = day.options[day.selectedIndex].value;
+
+		var month = $('day_month');
+		month = month.options[month.selectedIndex].value;
+
+		var year = $('day_year');
+		year = year.options[year.selectedIndex].value;
+
+		plots.day.refresh({'day': day, 'month': month, 'year': year});
+	}
+
+	function refresh_week()
+	{
+		var week = $('week_week');
+		week = week.options[week.selectedIndex].value;
+
+		var year = $('week_year');
+		year = year.options[year.selectedIndex].value;
+
+		plots.week.refresh({'week': week, 'year': year});
+	}
+
+	function refresh_month()
+	{
+		var month = $('month_month');
+		month = month.options[month.selectedIndex].value;
+
+		var year = $('month_year');
+		year = year.options[year.selectedIndex].value;
+
+		plots.month.refresh({'month': month, 'year': year});
+	}
+
+	function previous_day()
+	{
+		var day = $('day_day');
+		day = day.options[day.selectedIndex].value;
+
+		var month = $('day_month');
+		month = month.options[month.selectedIndex].value;
+
+		var year = $('day_year');
+		year = year.options[year.selectedIndex].value;
+
+		if (day == 0 && month == 0)
+		{
+			$('day_month').selectedIndex = 11;
+			$('day_year').selectedIndex += 1;
+			$('day_day').selectedIndex = 30;
+		}
+		else if (day == 0)
+		{
+			var d = new Date(year, month, 0);
+
+			$('day_month').selectedIndex -= 1;
+			$('day_day').selectedIndex = d.getDate() - 1;
+		}
+		else
+		{
+			$('day_day').selectedIndex -= 1;
+		}
+
+		refresh_day();
+	}
+
+	function next_day()
+	{
+		var day = $('day_day');
+		day = day.options[day.selectedIndex].value;
+
+		var month = $('day_month');
+		month = month.options[month.selectedIndex].value;
+
+		var year = $('day_year');
+		year = year.options[year.selectedIndex].value;
+
+		var d = new Date(year, month + 1, 0);
+		var lastday = d.getDate() == day;
+
+		if (lastday && month == 11)
+		{
+			if ($('day_year').selectedIndex == 0)
+			{
+				return;
+			}
+
+			$('day_year').selectedIndex -= 1;
+			$('day_day').selectedIndex = 0;
+			$('day_month').selectedIndex = 0;
+		}
+		else if (lastday)
+		{
+			$('day_month').selectedIndex += 1;
+			$('day_day').selectedIndex = 0;
+		}
+		else
+		{
+			$('day_day').selectedIndex += 1;
+		}
+
+		refresh_day();
+	}
+
+	function today_day()
+	{
+		var d = new Date();
+
+		$('day_day').selectedIndex = d.getDate() - 1;
+		$('day_month').selectedIndex = d.getMonth();
+		$('day_year').selectedIndex = 0;
+
+		refresh_day();
+	}
+
+	function prev_week()
+	{
+		var week = $('week_week');
+		var year = $('week_year');
+
+		if (week.selectedIndex == 0)
+		{
+			if (year.selectedIndex == year.options.length - 1)
+			{
+				return;
+			}
+
+			year.selectedIndex += 1;
+			week.selectedIndex = week.options.length - 1;
+		}
+		else
+		{
+			week.selectedIndex -= 1;
+		}
+
+		refresh_week();
+	}
+
+	function next_week()
+	{
+		var week = $('week_week');
+		var year = $('week_year');
+
+		if (week.selectedIndex == week.options.length - 1)
+		{
+			if (year.selectedIndex == 0)
+			{
+				return;
+			}
+
+			week.selectedIndex = 0;
+			year.selectedIndex -= 1;
+		}
+		else
+		{
+			week.selectedIndex += 1;
+		}
+
+		refresh_week();
+	}
+
+	function this_week()
+	{
+		$('week_week').selectedIndex = <?= date('W') - 1 ?>;
+		$('week_year').selectedIndex = 0;
+
+		refresh_week();
+	}
+
+	function prev_month()
+	{
+		var month = $('month_month');
+		var year = $('month_year');
+
+		if (month.selectedIndex == 0)
+		{
+			if (year.selectedIndex == year.options.length - 1)
+			{
+				return;
+			}
+
+			year.selectedIndex += 1;
+			month.selectedIndex = month.options.length - 1;
+		}
+		else
+		{
+			month.selectedIndex -= 1;
+		}
+
+		refresh_month();
+	}
+
+	function next_month()
+	{
+		var month = $('month_month');
+		var year = $('month_year');
+
+		if (month.selectedIndex == month.options.length - 1)
+		{
+			if (year.selectedIndex == 0)
+			{
+				return;
+			}
+
+			month.selectedIndex = 0;
+			year.selectedIndex -= 1;
+		}
+		else
+		{
+			month.selectedIndex += 1;
+		}
+
+		refresh_month();
+	}
+
+	function this_month()
+	{
+		$('month_month').selectedIndex = <?= date('n') - 1 ?>;
+		$('month_year').selectedIndex = 0;
+
+		refresh_month();
+	}
+</script>

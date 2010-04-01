@@ -1,0 +1,135 @@
+body {
+	background-color: #000;
+}
+
+div#main {
+	width: 900px;
+	margin: 0 auto;
+	font-family: "sans serif";
+}
+
+div#header {
+	background-image: url('../images/header.png');
+	width: 900px;
+	height: 112px;
+}
+
+div#content {
+	padding: 5px;
+	padding-left: 15px;
+	padding-right: 15px;
+	width: 870px;
+	min-height: 300px;
+	background-image: url('../images/bg.png');
+	color: #fff;
+}
+
+div#footer {
+	width: 900px;
+	height: 20px;
+	background-image: url('../images/footer.png');
+}
+
+div#content a {
+	color: #2d5c7e;
+	text-decoration: none;
+}
+
+div#content a:hover {
+	color: #133853;
+	text-decoration: underline;
+}
+
+table.status {
+	border-collapse: collapse;
+	width: 800px;
+	margin: 0 auto;
+}
+
+table.status tr.header td {
+	height: 3px;
+	padding: 0;
+}
+
+table.status tr.short_description {
+	cursor: pointer;
+}
+
+table.status tr.short_description td {
+	background-image: url('../images/status_row_bg.png');
+	height: 24px;
+}
+
+table.status tr.short_description td, table.status tr.long_description td {
+	font-size: 0.8em;
+}
+
+table.status tr.long_description td {
+	background-color: #1f1f1f;
+}
+
+table.status tr.long_description td.left, table.status tr.long_description td.right {
+	background-color: inherit;
+}
+
+table.status tr.long_description {
+	display: none;
+	color: #aaa;
+}
+
+table.status tr.short_description td.left {
+	background-image: url('../images/status_row_left.png');
+	width: 20px;
+	padding: 0;
+}
+
+table.status tr.short_description td.right {
+	background-image: url('../images/status_row_right.png');
+	width: 20px;
+	padding: 0;
+}
+
+table.status td, table.status th {
+	padding: 3px 15px 3px 5px;
+}
+
+table.status th {
+	text-align: left;
+}
+
+table.status div.progress {
+	border: 1px solid #bbb;
+	height: 20px;
+	position: relative;
+	width: 100%;
+}
+
+table.status div.progress img.progress {
+}
+
+table.status td.title {
+	font-weight: bold;
+	color: #ccc;
+}
+
+table.status span.taskssuccess {
+	font-weight: bold;
+	color: #a3ffa3;
+}
+
+table.status span.tasksfailed {
+	font-weight: bold;
+	color: #ffa3a5;
+}
+
+div.plot {
+	width: 810px;
+	margin: 0 auto;
+}
+
+div.plot canvas {
+	background-color: #333;
+	border: 2px solid #aaa;
+	padding: 5px;
+	margin: 0 auto;
+}

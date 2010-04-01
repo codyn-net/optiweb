@@ -1,0 +1,47 @@
+<?
+require_once('include/controller.php');
+require_once('include/command.php');
+
+class Home extends Controller
+{
+	function __construct()
+	{
+		parent::__construct();
+
+		$this->_dbpath = LOG_PATH;
+		$this->title = 'Optimization Framework Log';
+		$this->add_script('statusplot');
+	}
+
+	function month($idx)
+	{
+		static $months = array(
+			'January',
+			'February',
+			'March',
+			'April',
+			'May',
+			'June',
+			'July',
+			'August',
+			'September',
+			'October',
+			'November',
+			'December'
+		);
+
+		return $months[$idx];
+	}
+
+	function action_index()
+	{
+		$this->jobs = Command::jobs();
+
+		$this->view();
+	}
+}
+
+$controller = new Home();
+$controller->run();
+
+?>
