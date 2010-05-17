@@ -69,7 +69,7 @@
 <script type='text/javascript'>
 	function toggle_description(id)
 	{
-		var ret = $('tr.long_description_' + id);
+		var ret = $$('tr.long_description_' + id);
 
 		$A(ret).each(function (item) {
 			if (item.style.display != 'table-row')
