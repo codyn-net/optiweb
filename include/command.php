@@ -34,7 +34,7 @@
 
 		static function cmd($cmd, &$output)
 		{
-			return exec("/usr/bin/opticommand -c " . COMMAND_URI . " --raw --send " . escapeshellarg($cmd), $output);
+			return exec("/usr/bin/opticommand -m " . COMMAND_URI . " --raw --send " . escapeshellarg($cmd), $output);
 		}
 
 		static function jobs()
