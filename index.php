@@ -1,6 +1,7 @@
 <?
 require_once('include/controller.php');
 require_once('include/command.php');
+require_once('form.php');
 
 class Home extends Controller
 {
@@ -36,6 +37,17 @@ class Home extends Controller
 	function action_index()
 	{
 		$this->jobs = Command::jobs();
+		$form = new Form($this, 'get');
+
+		$toggled = explode(',', $form->toggled);
+
+		foreach ($this->jobs as $job)
+		{
+			if (in_array($job->id, $toggled))
+			{
+				$job->toggled = true;
+			}
+		}
 
 		$this->view();
 	}

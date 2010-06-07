@@ -1,3 +1,4 @@
+<div style='float: right;'><input type='button' value='Refresh' onclick='do_refresh();'/></div>
 <h1>Status</h1>
 <? if ($this->jobs) { ?>
 <table class='status'>
@@ -67,6 +68,8 @@
 	<? } ?>
 </table>
 <script type='text/javascript'>
+	var toggled_on = {};
+
 	function toggle_description(id)
 	{
 		var ret = $$('tr.long_description_' + id);
@@ -75,15 +78,41 @@
 			if (item.style.display != 'table-row')
 			{
 				item.style.display = 'table-row';
+				toggled_on[id] = true;
 			}
 			else
 			{
 				item.style.display = '';
+				toggled_on[id] = false;
 			}
 		});
 	}
 
-	toggle_description(10);
+	<? foreach ($this->jobs as $job)
+	{
+		if ($job->toggled) { ?>
+			toggle_description(<?= $job->id ?>);
+	<?	}
+	} ?>
+
+	function do_refresh()
+	{
+		var t = '';
+
+		$H(toggled_on).each(function (a) {
+			if (a[1])
+			{
+				if (t != '')
+				{
+					t += ',';
+				}
+
+				t += a[0];
+			}
+
+			document.location = 'index.php?toggled=' + encodeURIComponent(t);
+		});
+	}
 </script>
 <? } else { ?>
 <p>There are no jobs running at the moment.</p>
