@@ -11,27 +11,6 @@ class Home extends Controller
 
 		$this->_dbpath = LOG_PATH;
 		$this->title = 'Optimization Framework Log';
-		$this->add_script('statusplot');
-	}
-
-	function month($idx)
-	{
-		static $months = array(
-			'January',
-			'February',
-			'March',
-			'April',
-			'May',
-			'June',
-			'July',
-			'August',
-			'September',
-			'October',
-			'November',
-			'December'
-		);
-
-		return $months[$idx];
 	}
 
 	function action_index()

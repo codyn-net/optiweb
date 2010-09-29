@@ -31,13 +31,13 @@ div#footer {
 }
 
 div#content a {
-	color: #2d5c7e;
-	text-decoration: none;
+	color: #ffffff;
+	text-decoration: underline;
 }
 
 div#content a:hover {
-	color: #133853;
-	text-decoration: underline;
+	color: #ffffff;
+	text-decoration: none;
 }
 
 table.status {
