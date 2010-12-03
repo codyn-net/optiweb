@@ -111,6 +111,39 @@
 		});
 	}
 
+	var previousPoint = null;
+
+	function showTooltip(x, y, s)
+	{
+		$('<div id="tooltip">' + s + '</div>').css( {
+			position: 'absolute',
+			top: y + 5,
+			left: x + 5,
+			border: '1px solid #f0cd79',
+			padding: '2px',
+			'background-color': '#fffde6',
+			opacity: 0.80
+		}).appendTo("body");
+	}
+
+	function make_tooltip(event, pos, item) {
+		if (item)
+		{
+			if (previousPoint != item.datapoint)
+			{
+				previousPoint = item.datapoint;
+				$("#tooltip").remove();
+
+				showTooltip(item.pageX, item.pageY, item.series.label + " at " + item.datapoint[0] + ": " + item.datapoint[1]);
+			}
+		}
+		else
+		{
+			$("#tooltip").remove();
+			previousPoint = null;
+		}
+	}
+
 	function redraw_progress(id, data)
 	{
 		var plotdata = [];
@@ -137,10 +170,14 @@
 			});
 		}
 
-		plots[id] = $.plot($("#progress_" + id), plotdata, {
+		var container = $("#progress_" + id);
+
+		plots[id] = $.plot(container, plotdata, {
 			grid: {hoverable: true, clickable: true},
 			legend: {position: 'se', container: $("#progress_legend_" + id)},
 		});
+
+		container.bind('plothover', make_tooltip);
 	}
 
 	function refresh_progress(id)
