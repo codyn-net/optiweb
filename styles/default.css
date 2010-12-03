@@ -1,5 +1,5 @@
 body {
-	background-color: #fff;
+	background-color: #eee;
 	padding: 0;
 	margin: 0;
 }
@@ -10,11 +10,12 @@ div#main {
 }
 
 div#header {
-	background-color: #717171;
+	background-color: #333;
 	height: 100px;
 	color: #fff;
 	font-family: "ubuntu", "sans serif";
 	padding: 10px;
+	border-bottom: 2px solid #000;
 }
 
 div#header div.title {
@@ -31,16 +32,7 @@ img#logo {
 }
 
 div#subheader {
-	background-color: #333;
-	height: 30px;
-	border-top: 1px solid #aaa;
-	border-bottom: 2px solid #333;
-	margin-left: -15px;
-	margin-right: -15px;
-	margin-top: -5px;
-	color: #fff;
-	padding-top: 5px;
-	padding-right: 5px;
+	float: right;
 }
 
 div#content {
@@ -48,13 +40,11 @@ div#content {
 	padding-left: 15px;
 	padding-right: 15px;
 	min-height: 300px;
-	color: #555;
+	color: #333;
 	background-color: #eee;
 }
 
 div#footer {
-	background-color: #333;
-	height: 5px;
 }
 
 div#content a {
@@ -62,18 +52,8 @@ div#content a {
 	text-decoration: underline;
 }
 
-div#subheader a {
-	color: #fff;
-	text-decoration: underline;
-}
-
 div#content a:hover {
 	color: #333;
-	text-decoration: none;
-}
-
-div#subheader a:hover {
-	color: #ddd;
 	text-decoration: none;
 }
 
