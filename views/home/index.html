@@ -13,7 +13,10 @@
 			<th></th>
 		</tr>
 	</thead>
-	<? foreach ($this->jobs as $job) { ?>
+	<? for ($i = 0; $i < count($this->jobs); $i++) { $job = $this->jobs[$i]; ?>
+	<? if ($i != 0) { ?>
+	<tr class='separator'><td class='left right' colspan='5'><div></div></td></tr>
+	<? } ?>
 	<tr class='short_description' onclick='toggle_description(<?= $job->id ?>)'>
 		<td class='name left'><?= $job->name ?></td>
 		<td class='user'><?= $job->user ?></td>
@@ -27,31 +30,35 @@
 			<?= number_format($job->progress * 100, 2) ?>&nbsp;%
 		</td>
 	</tr>
-	<tr class='long_description long_description_<?= $job->id ?> spacing'>
-		<td colspan='5' class='left right'></td>
-	</tr>
 	<tr class='long_description long_description_<?= $job->id ?>'>
-		<td class='title left indent'>Priority:</td>
-		<td colspan='2' class='indent'><?= $job->priority ?></td>
-		<td class='right' colspan='2' rowspan='4'>
+		<td colspan='3' class='left long_description'>
+			<table>
+				<tr>
+					<td class='title'>Priority:</td>
+					<td class='indent'><?= $job->priority ?></td>
+				</tr>
+				<tr>
+					<td class='title'>Tasks:</td>
+					<td class='indent'><span class='taskssuccess'><?= $job->taskssuccess ?></span>/<span class='tasksfailed'><?= $job->tasksfailed ?></span></td>
+				</tr>
+				<tr>
+					<td class='title'>Runtime:</td>
+					<td class='indent'><?= number_format($job->runtime, 2) ?> seconds</td>
+				</tr>
+				<tr>
+					<td class='title'>Duration:</td>
+					<td class='indent'><?= english_duration($job->lastupdate - $job->started) ?></td>
+				</tr>
+			</table>
+		</td>
+		<td colspan='2' class='right'>
 			<div class='progress_legend' id='progress_legend_<?= $job->id ?>'>
 			</div>
 			<div class='progress_plot' id='progress_<?= $job->id ?>'>
 			</div>
 		</td>
 	</tr>
-	<tr class='long_description long_description_<?= $job->id ?>'>
-		<td class='title left indent'>Tasks:</td>
-		<td colspan='2' class='indent'><span class='taskssuccess'><?= $job->taskssuccess ?></span>/<span class='tasksfailed'><?= $job->tasksfailed ?></span></td>
-	</tr>
-	<tr class='long_description long_description_<?= $job->id ?>'>
-		<td class='title left indent'>Runtime:</td>
-		<td colspan='2' class='indent'><?= number_format($job->runtime, 2) ?> seconds</td>
-	</tr>
-	<tr class='long_description long_description_<?= $job->id ?> last'>
-		<td class='title left indent'>Duration:</td>
-		<td colspan='2' class='indent'><?= english_duration($job->lastupdate - $job->started) ?></td>
-	</tr>
+
 	<? } ?>
 </table>
 <script type='text/javascript'>

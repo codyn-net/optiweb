@@ -63,6 +63,10 @@ table.status {
 	margin: 0 auto;
 }
 
+table.status td {
+	background-color: #fff;
+}
+
 table.status tr.short_description {
 	cursor: pointer;
 
@@ -77,17 +81,19 @@ table.status {
 }
 
 table.status tr.short_description td {
-	background-color: #fff;
 	height: 24px;
 }
 
-table.status tr.short_description td, table.status tr.long_description td {
+table.status {
 	font-size: 0.8em;
 }
 
 table.status tr.long_description td {
-	background-color: #fff;
-	vertical-align: top;
+	vertical-align: middle;
+}
+
+table.status tr.long_description td.long_description table {
+	margin: 0 auto;
 }
 
 table.status td.name {
@@ -112,6 +118,20 @@ table.status td.progress_num {
 table.status tr.long_description {
 	display: none;
 	color: #333;
+}
+
+table.status tr.separator {
+	height: 1px;
+}
+
+table.status tr.separator td {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+table.status tr.separator td div {
+	border-top: 1px solid #ddd;
+	height: 1px;
 }
 
 table.status tr.spacing {
