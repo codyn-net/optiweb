@@ -96,15 +96,15 @@
 	{
 		var t = '';
 
-		$(toggled_on).each(function (a) {
-			if (a[1])
+		$.each(toggled_on, function (key, value) {
+			if (value)
 			{
 				if (t != '')
 				{
 					t += ',';
 				}
 
-				t += a[0];
+				t += key;
 			}
 
 			document.location = 'index.php?toggled=' + encodeURIComponent(t);
