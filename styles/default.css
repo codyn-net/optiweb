@@ -61,7 +61,6 @@ table.status {
 	border-collapse: collapse;
 	width: 100%;
 	margin: 0 auto;
-	border-bottom: 1px solid #333;
 }
 
 table.status tr.short_description {
@@ -70,6 +69,10 @@ table.status tr.short_description {
 }
 
 table.status th {
+	border-bottom: 1px solid #333;
+}
+
+table.status {
 	border-bottom: 1px solid #333;
 }
 
@@ -83,12 +86,8 @@ table.status tr.short_description td, table.status tr.long_description td {
 }
 
 table.status tr.long_description td {
-	background-color: #fafafa;
+	background-color: #f4f4f4;
 	vertical-align: top;
-}
-
-table.status tr.spacing td {
-	background-color: inherit;
 }
 
 table.status td.name {
@@ -113,18 +112,13 @@ table.status td.progress_num {
 table.status tr.long_description {
 	display: none;
 	color: #333;
-	border: 1px solid #666;
-	border-top: 0;
-	border-bottom: 0;
 }
 
 table.status tr.spacing {
-	border: 0;
 	height: 15px;
 }
 
 table.status tr.last {
-	border-bottom: 1px solid #666;
 }
 
 table.status td, table.status th {
@@ -182,10 +176,11 @@ div.plot canvas {
 
 div.progress_plot {
 	background-color: #fff;
-	height: 300px;
+	height: 320px;
 	border: 1px solid #aaa;
 	margin: 5px;
 	margin-right: 150px;
+	margin-bottom: 20px;
 }
 
 div.progress_legend {
@@ -193,7 +188,7 @@ div.progress_legend {
 	background-color: #fff;
 	border: 1px solid #aaa;
 	margin: 5px;
-	height: 300px;
+	height: 320px;
 }
 
 table.status tr.long_description td.legendLabel, table.status tr.long_description td.legendColorBox {

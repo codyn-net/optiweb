@@ -2,7 +2,6 @@
 	<div style='float: right;'><a href='history.php'>Show History</a> <input type='button' value='Refresh' onclick='do_refresh();'/></div>
 </div>
 
-<h1>Status</h1>
 <? if ($this->jobs) { ?>
 <table class='status'>
 	<thead>
@@ -29,9 +28,9 @@
 		</td>
 	</tr>
 	<tr class='long_description long_description_<?= $job->id ?>'>
-		<td class='title'>Priority:</td>
+		<td class='title left'>Priority:</td>
 		<td colspan='1'><?= $job->priority ?></td>
-		<td colspan='3' rowspan='4'>
+		<td class='right' colspan='3' rowspan='4'>
 			<div class='progress_legend' id='progress_legend_<?= $job->id ?>'>
 			</div>
 			<div class='progress_plot' id='progress_<?= $job->id ?>'>
@@ -39,19 +38,16 @@
 		</td>
 	</tr>
 	<tr class='long_description long_description_<?= $job->id ?>'>
-		<td class='title'>Tasks:</td>
+		<td class='title left'>Tasks:</td>
 		<td><span class='taskssuccess'><?= $job->taskssuccess ?></span>/<span class='tasksfailed'><?= $job->tasksfailed ?></span></td>
 	</tr>
 	<tr class='long_description long_description_<?= $job->id ?>'>
-		<td class='title'>Runtime:</td>
+		<td class='title left'>Runtime:</td>
 		<td><?= number_format($job->runtime, 2) ?> seconds</td>
 	</tr>
 	<tr class='long_description long_description_<?= $job->id ?> last'>
-		<td class='title'>Duration:</td>
+		<td class='title left'>Duration:</td>
 		<td><?= english_duration($job->lastupdate - $job->started) ?></td>
-	</tr>
-	<tr class='long_description long_description_<?= $job->id ?> spacing'>
-		<td colspan='5'></td>
 	</tr>
 	<? } ?>
 </table>
@@ -63,17 +59,11 @@
 	{
 		var ret = $('tr.long_description_' + id);
 
+		toggled_on[id] = !toggled_on[id];
+		disp = toggled_on[id] ? 'table-row' : '';
+
 		ret.each(function (idx, item) {
-			if (item.style.display != 'table-row')
-			{
-				item.style.display = 'table-row';
-				toggled_on[id] = true;
-			}
-			else
-			{
-				item.style.display = '';
-				toggled_on[id] = false;
-			}
+			item.style.display = disp;
 		});
 
 		if (toggled_on[id])
@@ -82,11 +72,12 @@
 		}
 	}
 
-	<? foreach ($this->jobs as $job)
-	{
-		if ($job->toggled) { ?>
+	<? foreach ($this->jobs as $job) { ?>
+	toggled_on[<?= $job->id ?>] = false;
+
+	<? if ($job->toggled) { ?>
 			toggle_description(<?= $job->id ?>);
-	<?	}
+	<? }
 	} ?>
 
 	function do_refresh()
