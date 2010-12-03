@@ -15,11 +15,8 @@
 		</tr>
 	</thead>
 	<? foreach ($this->jobs as $job) { ?>
-	<tr class='header'>
-		<td colspan='5'></td>
-	</tr>
 	<tr class='short_description' onclick='toggle_description(<?= $job->id ?>)'>
-		<td class='name'><?= $job->name ?></td>
+		<td class='name left'><?= $job->name ?></td>
 		<td class='user'><?= $job->user ?></td>
 		<td class='started'><?= english_date($job->started) ?></td>
 		<td class='progress'>
@@ -27,7 +24,7 @@
 				<img class='progress' src='images/progress.png' height='20px' width='<?= intval($job->progress * 100) ?>%'/>
 			</div>
 		</td>
-		<td class='progress_num'>
+		<td class='progress_num right'>
 			<?= number_format($job->progress * 100, 2) ?>&nbsp;%
 		</td>
 	</tr>

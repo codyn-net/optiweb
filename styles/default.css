@@ -61,16 +61,16 @@ table.status {
 	border-collapse: collapse;
 	width: 100%;
 	margin: 0 auto;
-}
-
-table.status tr.header td {
-	height: 3px;
-	padding: 0;
+	border-bottom: 1px solid #333;
 }
 
 table.status tr.short_description {
 	cursor: pointer;
-	border: 1px solid #333;
+
+}
+
+table.status th {
+	border-bottom: 1px solid #333;
 }
 
 table.status tr.short_description td {
@@ -136,10 +136,18 @@ table.status th {
 }
 
 table.status div.progress {
-	border: 1px solid #bbb;
+	border: 1px solid #6b6b6b;
 	height: 20px;
 	position: relative;
 	width: 100%;
+}
+
+table.status td.left {
+	border-left: 1px solid #333;
+}
+
+table.status td.right {
+	border-right: 1px solid #333;
 }
 
 table.status div.progress img.progress {
