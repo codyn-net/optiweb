@@ -1,33 +1,24 @@
-<div style='float: right;'><a href='history.php'>Show History</a> <input type='button' value='Refresh' onclick='do_refresh();'/></div>
+<div id="subheader">
+	<div style='float: right;'><a href='history.php'>Show History</a> <input type='button' value='Refresh' onclick='do_refresh();'/></div>
+</div>
+
 <h1>Status</h1>
 <? if ($this->jobs) { ?>
 <table class='status'>
 	<thead>
 		<tr>
-			<th></th>
 			<th>Name</th>
 			<th>User</th>
 			<th>Started</th>
 			<th>Progress</th>
 			<th></th>
-			<th></th>
 		</tr>
 	</thead>
-	<colgroup>
-		<col>
-		<col>
-		<col>
-		<col>
-		<col width='150px'>
-		<col width='20px'>
-		<col>
-	</colgroup>
 	<? foreach ($this->jobs as $job) { ?>
 	<tr class='header'>
-		<td colspan='7'></td>
+		<td colspan='5'></td>
 	</tr>
 	<tr class='short_description' onclick='toggle_description(<?= $job->id ?>)'>
-		<td class='left'></td>
 		<td class='name'><?= $job->name ?></td>
 		<td class='user'><?= $job->user ?></td>
 		<td class='started'><?= english_date($job->started) ?></td>
@@ -39,42 +30,43 @@
 		<td class='progress_num'>
 			<?= number_format($job->progress * 100, 2) ?>&nbsp;%
 		</td>
-		<td class='right'></td>
 	</tr>
 	<tr class='long_description long_description_<?= $job->id ?>'>
-		<td class='left'></td>
 		<td class='title'>Priority:</td>
-		<td colspan='4'><?= $job->priority ?></td>
-		<td class='right'></td>
+		<td colspan='1'><?= $job->priority ?></td>
+		<td colspan='3' rowspan='4'>
+			<div class='progress_legend' id='progress_legend_<?= $job->id ?>'>
+			</div>
+			<div class='progress_plot' id='progress_<?= $job->id ?>'>
+			</div>
+		</td>
 	</tr>
 	<tr class='long_description long_description_<?= $job->id ?>'>
-		<td class='left'></td>
 		<td class='title'>Tasks:</td>
-		<td colspan='4'><span class='taskssuccess'><?= $job->taskssuccess ?></span>/<span class='tasksfailed'><?= $job->tasksfailed ?></span></td>
-		<td class='right'></td>
+		<td><span class='taskssuccess'><?= $job->taskssuccess ?></span>/<span class='tasksfailed'><?= $job->tasksfailed ?></span></td>
 	</tr>
 	<tr class='long_description long_description_<?= $job->id ?>'>
-		<td class='left'></td>
 		<td class='title'>Runtime:</td>
-		<td colspan='4'><?= number_format($job->runtime, 2) ?> seconds</td>
-		<td class='right'></td>
+		<td><?= number_format($job->runtime, 2) ?> seconds</td>
 	</tr>
-	<tr class='long_description long_description_<?= $job->id ?>'>
-		<td class='left'></td>
+	<tr class='long_description long_description_<?= $job->id ?> last'>
 		<td class='title'>Duration:</td>
-		<td colspan='4'><?= english_duration($job->lastupdate - $job->started) ?></td>
-		<td class='right'></td>
+		<td><?= english_duration($job->lastupdate - $job->started) ?></td>
+	</tr>
+	<tr class='long_description long_description_<?= $job->id ?> spacing'>
+		<td colspan='5'></td>
 	</tr>
 	<? } ?>
 </table>
 <script type='text/javascript'>
 	var toggled_on = {};
+	var plots = {};
 
 	function toggle_description(id)
 	{
-		var ret = $$('tr.long_description_' + id);
+		var ret = $('tr.long_description_' + id);
 
-		$A(ret).each(function (item) {
+		ret.each(function (idx, item) {
 			if (item.style.display != 'table-row')
 			{
 				item.style.display = 'table-row';
@@ -86,6 +78,11 @@
 				toggled_on[id] = false;
 			}
 		});
+
+		if (toggled_on[id])
+		{
+			refresh_progress(id);
+		}
 	}
 
 	<? foreach ($this->jobs as $job)
@@ -99,7 +96,7 @@
 	{
 		var t = '';
 
-		$H(toggled_on).each(function (a) {
+		$(toggled_on).each(function (a) {
 			if (a[1])
 			{
 				if (t != '')
@@ -112,6 +109,49 @@
 
 			document.location = 'index.php?toggled=' + encodeURIComponent(t);
 		});
+	}
+
+	function redraw_progress(id, data)
+	{
+		var plotdata = [];
+
+		for (var i = 0; i < data.header.length; ++i)
+		{
+			plotdata.push({
+				data: data.best[i],
+				label: 'Max(' + data.header[i] + ')',
+				lines: {show: true},
+				shadowSize: 1,
+				visible: true,
+			});
+		}
+
+		for (var i = 0; i < data.header.length; ++i)
+		{
+			plotdata.push({
+				data: data.mean[i],
+				label: 'Avg(' + data.header[i] + ')',
+				lines: {show: true},
+				shadowSize: 1,
+				visible: false,
+			});
+		}
+
+		plots[id] = $.plot($("#progress_" + id), plotdata, {
+			grid: {hoverable: true, clickable: true},
+			legend: {position: 'se', container: $("#progress_legend_" + id)},
+		});
+	}
+
+	function refresh_progress(id)
+	{
+		jQuery.getJSON('progress.php',
+			{'id': id},
+
+			function (data) {
+				redraw_progress(id, data);
+			}
+		);
 	}
 </script>
 <? } else { ?>

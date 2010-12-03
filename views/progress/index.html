@@ -1,0 +1,20 @@
+<? $header = array_keys($this->progress->header) ?>
+{
+	"header": ["<?= implode('", "', $header) ?>"],
+	"best": [
+	         <? foreach ($header as $h) { $num = count($this->progress->best[$h]); ?>
+
+	         [<? for ($i = 0; $i < $num; $i++) { ?>
+[<?= $i ?>, <?= $this->progress->best[$h][$i] ?>],
+<? } ?>],
+	         <? } ?>
+	],
+	"mean": [
+	         <? foreach ($header as $h) { $num = count($this->progress->mean[$h]); ?>
+
+	         [<? for ($i = 0; $i < $num; $i++) { ?>
+[<?= $i ?>, <?= $this->progress->mean[$h][$i] ?>],
+<? } ?>],
+	         <? } ?>
+	]
+}

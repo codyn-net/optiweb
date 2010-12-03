@@ -117,7 +117,9 @@
         this.getAxes = function() { return axes; };
         this.highlight = highlight;
         this.unhighlight = unhighlight;
-        
+
+        this.getSeries = function () { return series; };
+
         // initialize
         parseOptions(options_);
         setData(data_);
@@ -132,7 +134,14 @@
             fillInSeriesOptions();
             processData();
         }
-        
+
+        function updateVisibleSeries()
+        {
+            processData();
+            setupGrid();
+            draw();
+        }
+
         function parseData(d) {
             var res = [];
             for (var i = 0; i < d.length; ++i) {
@@ -242,6 +251,11 @@
                     s.yaxis = axes.y2axis;
                 else
                     s.yaxis = axes.yaxis;
+
+                if (s.visible == null)
+                {
+                    s.visible = true;
+                }
             }
         }
         
@@ -257,6 +271,11 @@
             }
             
             for (var i = 0; i < series.length; ++i) {
+                if (!series[i].visible)
+                {
+                    continue;
+                }
+                
                 var data = series[i].data,
                     axisx = series[i].xaxis,
                     axisy = series[i].yaxis,
@@ -823,7 +842,10 @@
         function draw() {
             drawGrid();
             for (var i = 0; i < series.length; i++) {
-                drawSeries(series[i]);
+                if (series[i].visible)
+                {
+                    drawSeries(series[i]);
+                }
             }
         }
 
@@ -1466,7 +1488,43 @@
                 ctx.fillStyle = c.toString();
             }
         }
-        
+
+        function toggleLegendButton()
+        {
+            var idx = $(this).attr('series_idx');
+
+            if ($(this).hasClass('legendEnabled'))
+            {
+                $(this).removeClass('legendEnabled');
+                $(this).addClass('legendDisabled');
+
+                $(this).css('backgroundColor', 'transparent');
+
+                series[idx].visible = false;
+            }
+            else
+            {
+                $(this).removeClass('legendDisabled');
+                $(this).addClass('legendEnabled');
+
+                $(this).css('backgroundColor', series[idx].color);
+
+                series[idx].visible = true;
+            }
+
+            updateVisibleSeries();
+        }
+
+        function connectLegendButtons(container)
+        {
+            var i = 0;
+
+            $(container).find('div.legendToggleButton').each(function() {
+                $(this).attr('series_idx', i++);
+                $(this).click(toggleLegendButton);
+            });
+        }
+
         function insertLegend() {
             target.find(".legend").remove();
 
@@ -1491,7 +1549,7 @@
                     label = options.legend.labelFormatter(label);
                 
                 fragments.push(
-                    '<td class="legendColorBox"><div style="border:1px solid ' + options.legend.labelBoxBorderColor + ';padding:1px"><div style="width:14px;height:10px;background-color:' + series[i].color + ';overflow:hidden"></div></div></td>' +
+                    '<td class="legendColorBox"><div style="border:1px solid ' + options.legend.labelBoxBorderColor + ';padding:1px"><div style="width:14px;height:10px;background-color:' + (series[i].visible ? series[i].color : 'none') + ';overflow:hidden;cursor:pointer" class="legendToggleButton series_' + i + ' ' + (series[i].visible ? 'legendEnabled' : 'legendDisabled') + '"></div></div></td>' +
                     '<td class="legendLabel">' + label + '</td>');
             }
             if (rowStarted)
@@ -1502,7 +1560,10 @@
 
             var table = '<table style="font-size:smaller;color:' + options.grid.color + '">' + fragments.join("") + '</table>';
             if (options.legend.container != null)
+            {
                 options.legend.container.html(table);
+                connectLegendButtons(options.legend.container);
+            }
             else {
                 var pos = "";
                 var p = options.legend.position, m = options.legend.margin;
@@ -1515,6 +1576,9 @@
                 else if (p.charAt(1) == "w")
                     pos += 'left:' + (m + plotOffset.left) + 'px;';
                 var legend = $('<div class="legend">' + table.replace('style="', 'style="position:absolute;' + pos +';') + '</div>').appendTo(target);
+
+                connectLegendButtons(legend);
+
                 if (options.legend.backgroundOpacity != 0.0) {
                     // put in the transparent background
                     // separately to avoid blended labels and
@@ -2134,3 +2198,5 @@
     }
         
 })(jQuery);
+
+/* vi:ex:ts=4:et */

@@ -28,6 +28,17 @@
 		}
 	}
 
+	class JobProgress
+	{
+		public $best = array();
+		public $mean = array();
+		public $header = array();
+
+		function __construct()
+		{
+		}
+	}
+
 	class Command
 	{
 		static $jobs = null;
@@ -35,6 +46,45 @@
 		static function cmd($cmd, &$output)
 		{
 			return exec("/usr/bin/opticommand -m " . COMMAND_URI . " --raw --send " . escapeshellarg($cmd), $output);
+		}
+
+		static function progress($job)
+		{
+			self::cmd('progress ' . intval($job), $lines);
+
+			$header = array_shift($lines);
+			$ret = new JobProgress();
+			$parts = explode("\t", $header);
+
+			$names = array();
+
+			for ($i = 0; $i < count($parts); $i += 2)
+			{
+				$ret->header[$parts[$i]] = intval($parts[$i + 1]);
+				$ret->best[$parts[$i]] = array();
+				$ret->mean[$parts[$i]] = array();
+
+				$names[] = $parts[$i];
+			}
+
+			foreach ($lines as $line)
+			{
+				$parts = explode("\t", $line);
+
+				// First value is the iteration
+				$iteration = intval(array_shift($parts));
+
+				for ($i = 0; $i < count($parts); $i += 2)
+				{
+					$idx = intval($i / 2);
+					$head = $names[$idx];
+
+					$ret->best[$head][] = floatval($parts[$i]);
+					$ret->mean[$head][] = floatval($parts[$i + 1]);
+				}
+			}
+
+			return $ret;
 		}
 
 		static function jobs()

@@ -10,7 +10,9 @@ class Home extends Controller
 		parent::__construct();
 
 		$this->_dbpath = LOG_PATH;
-		$this->title = 'Optimization Framework Log';
+		$this->title = 'Optimization Inspector';
+
+		$this->add_script('jquery.flot');
 	}
 
 	function action_index()
