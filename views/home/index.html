@@ -190,7 +190,7 @@
 				label: 'M(' + data.header[i].replace(' ', '&nbsp;') + ')',
 				lines: {show: true},
 				shadowSize: 1,
-				visible: !hasvisibleseries || cnt in visibleseries,
+				visible: !hasvisibleseries || $.inArray(cnt, visibleseries) != -1,
 			});
 
 			cnt++;
@@ -203,7 +203,7 @@
 				label: 'A(' + data.header[i].replace(' ', '&nbsp;') + ')',
 				lines: {show: true},
 				shadowSize: 1,
-				visible: hasvisibleseries && (cnt in visibleseries),
+				visible: hasvisibleseries && $.inArray(cnt, visibleseries) != -1,
 			});
 
 			cnt++;
