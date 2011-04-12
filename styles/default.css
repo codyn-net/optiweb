@@ -88,7 +88,7 @@ table.status {
 	font-size: 0.8em;
 }
 
-table.status tr.long_description td {
+table.status tr.long_description > td {
 	vertical-align: middle;
 }
 
@@ -152,8 +152,7 @@ table.status th {
 table.status div.progress {
 	border: 1px solid #6b6b6b;
 	height: 20px;
-	position: relative;
-	width: 100%;
+
 }
 
 table.status tr.long_description td.left
@@ -191,7 +190,6 @@ table.status span.tasksfailed {
 }
 
 div.plot {
-	width: 810px;
 	margin: 0 auto;
 }
 
@@ -202,20 +200,33 @@ div.plot canvas {
 	margin: 0 auto;
 }
 
+div.outerplot {
+	position: relative;
+}
+
+table.plot {
+	margin: 0 0;
+	border: 1px solid black;
+	width: 100%;
+}
+
+table.plot td.plot {
+	width: 100%;
+}
+
 div.progress_plot {
 	background-color: #fff;
-	height: 320px;
-	margin-right: 200px;
-	margin-bottom: 50px;
+	height: 400px;
 }
 
 div.progress_legend {
-	float: right;
 	background-color: #fff;
-	margin: 5px;
-	height: 320px;
 }
 
 table.status tr.long_description td.legendLabel, table.status tr.long_description td.legendColorBox {
 	background-color: inherit;
+}
+
+table.plot tr td {
+	vertical-align: top;
 }

@@ -15,7 +15,7 @@ class Controller extends NovoController
 		$this->title = '';
 
 		$this->add_style('default');
-		$this->add_script('jquery');
+		$this->add_script('jquery-1.5.2.min');
 	}
 
 	function view_path($view)

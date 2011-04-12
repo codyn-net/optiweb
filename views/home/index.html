@@ -51,10 +51,20 @@
 				</tr>
 			</table>
 		</td>
-		<td colspan='2' class='right'>
-			<div class='progress_legend' id='progress_legend_<?= $job->id ?>'>
-			</div>
-			<div class='progress_plot' id='progress_<?= $job->id ?>'>
+		<td colspan='2' class='right outerplot'>
+			<div class='outerplot'>
+			<table class='plot'>
+			<tr>
+			<td class='plot'>
+				<div class='progress_plot' id='progress_<?= $job->id ?>'>
+				</div>
+			</td>
+			<td class='legend'>
+				<div class='progress_legend' id='progress_legend_<?= $job->id ?>'>
+				</div>
+			</td>
+			</tr>
+			</table>
 			</div>
 		</td>
 	</tr>
@@ -65,7 +75,7 @@
 	var toggled_on = {};
 	var plots = {};
 
-	function toggle_description(id)
+	function toggle_description(id, visibleseries)
 	{
 		var ret = $('tr.long_description_' + id);
 
@@ -78,35 +88,53 @@
 
 		if (toggled_on[id])
 		{
-			refresh_progress(id);
+			refresh_progress(id, visibleseries);
 		}
 	}
 
 	<? foreach ($this->jobs as $job) { ?>
 	toggled_on[<?= $job->id ?>] = false;
+	<? } ?>
 
-	<? if ($job->toggled) { ?>
-			toggle_description(<?= $job->id ?>);
-	<? }
-	} ?>
+	$(window).load(function() {
+		<? foreach ($this->jobs as $job) { ?>
+		<? if ($job->toggled) { ?>
+				toggle_description(<?= $job->id ?>, [<?= implode(', ', $job->toggled) ?>]);
+		<? }
+		} ?>
+	});
+
+	function legend_visible(id)
+	{
+		var series = plots[id].getSeries();
+		var visible = [];
+
+		for (var i = 0; i < series.length; ++i)
+		{
+			if (series[i].visible)
+			{
+				visible.push(i);
+			}
+		}
+
+		return visible;
+	}
 
 	function do_refresh()
 	{
-		var t = '';
+		var t = [];
 
 		$.each(toggled_on, function (key, value) {
 			if (value)
 			{
-				if (t != '')
-				{
-					t += ',';
-				}
+				visible = $.map(legend_visible(key), function (x) { return x.toString(); });
 
-				t += key;
+				t.push(key + ":" + visible.join(':'));
 			}
 
-			document.location = 'index.php?toggled=' + encodeURIComponent(t);
 		});
+
+		document.location = 'index.php?toggled=' + encodeURIComponent(t.join(','));
 	}
 
 	var previousPoint = null;
@@ -142,49 +170,54 @@
 		}
 	}
 
-	function redraw_progress(id, data)
+	function redraw_progress(id, data, visibleseries)
 	{
 		var plotdata = [];
+		var cnt = 0;
 
 		for (var i = 0; i < data.header.length; ++i)
 		{
 			plotdata.push({
 				data: data.best[i],
-				label: 'Max(' + data.header[i] + ')',
+				label: 'M(' + data.header[i].replace(' ', '&nbsp;') + ')',
 				lines: {show: true},
 				shadowSize: 1,
-				visible: true,
+				visible: !visibleseries || cnt in visibleseries,
 			});
+
+			cnt++;
 		}
 
 		for (var i = 0; i < data.header.length; ++i)
 		{
 			plotdata.push({
 				data: data.mean[i],
-				label: 'Avg(' + data.header[i] + ')',
+				label: 'A(' + data.header[i].replace(' ', '&nbsp;') + ')',
 				lines: {show: true},
 				shadowSize: 1,
-				visible: false,
+				visible: visibleseries && cnt in visibleseries,
 			});
+
+			cnt++;
 		}
 
 		var container = $("#progress_" + id);
 
 		plots[id] = $.plot(container, plotdata, {
 			grid: {hoverable: true, clickable: true},
-			legend: {position: 'se', container: $("#progress_legend_" + id)},
+			legend: {position: 'se', container: $("#progress_legend_" + id), clickable: true},
 		});
 
 		container.bind('plothover', make_tooltip);
 	}
 
-	function refresh_progress(id)
+	function refresh_progress(id, visibleseries)
 	{
 		jQuery.getJSON('progress.php',
-			{'id': id},
+			{id: id},
 
 			function (data) {
-				redraw_progress(id, data);
+				redraw_progress(id, data, visibleseries);
 			}
 		);
 	}

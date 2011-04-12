@@ -1,20 +1,39 @@
-<? $header = array_keys($this->progress->header) ?>
+<?
+	$header = array_keys($this->progress->header);
+	$bests = array();
+	$means = array();
+
+	foreach ($header as $h)
+	{
+		$best = $this->progress->best[$h];
+		$mean = $this->progress->mean[$h];
+
+		$bestdata = array();
+		$meandata = array();
+
+		$num = count($best);
+
+		for ($i = 0; $i < $num; $i++)
+		{
+			$bestdata[] = '[' . $i . ', ' . $best[$i] . ']';
+			$meandata[] = '[' . $i . ', ' . $mean[$i] . ']';
+		}
+
+		$bests[] = "[\n\t\t\t" . implode(",\n\t\t\t", $bestdata) . "\n\t\t]";
+		$means[] = "[\n\t\t\t" . implode(",\n\t\t\t", $meandata) . "\n\t\t]";
+	}
+?>
+
 {
 	"header": ["<?= implode('", "', $header) ?>"],
-	"best": [
-	         <? foreach ($header as $h) { $num = count($this->progress->best[$h]); ?>
+	"best":
+	[
+		<?= implode(",\n\t\t", $bests) ?>
 
-	         [<? for ($i = 0; $i < $num; $i++) { ?>
-[<?= $i ?>, <?= $this->progress->best[$h][$i] ?>],
-<? } ?>],
-	         <? } ?>
 	],
-	"mean": [
-	         <? foreach ($header as $h) { $num = count($this->progress->mean[$h]); ?>
+	"mean":
+	[
+		<?= implode(",\n\t\t", $means) ?>
 
-	         [<? for ($i = 0; $i < $num; $i++) { ?>
-[<?= $i ?>, <?= $this->progress->mean[$h][$i] ?>],
-<? } ?>],
-	         <? } ?>
 	]
 }
