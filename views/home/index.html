@@ -1,5 +1,10 @@
 <div id="subheader">
-	<div style='float: right;'><a href='history.php'>Show History</a> <input type='button' value='Refresh' onclick='do_refresh();'/></div>
+	<div style='float: right;'><a href='history.php'>Show History</a> <input type='button' value='Refresh' onclick='do_refresh();'/> <select name='user_filter' id='user_filter' onchange='do_refresh();'>
+	<option value=''>All Users</option>
+	<? foreach ($this->users as $user) { ?>
+	<option value='<?= $user ?>' <?= $this->user_selected == $user ? 'selected="selected"' : '' ?>'><?= $user ?></option>
+	<? } ?>
+	</select></div>
 </div>
 
 <? if ($this->jobs) { ?>
@@ -134,7 +139,9 @@
 
 		});
 
-		document.location = 'index.php?toggled=' + encodeURIComponent(t.join(','));
+		var userfilter = $('#user_filter').val();
+
+		document.location = 'index.php?toggled=' + encodeURIComponent(t.join(',')) + '&user_filter=' + encodeURIComponent(userfilter);
 	}
 
 	var previousPoint = null;
