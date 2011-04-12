@@ -181,6 +181,7 @@
 	{
 		var plotdata = [];
 		var cnt = 0;
+		var hasvisibleseries = typeof visibleseries != 'undefined';
 
 		for (var i = 0; i < data.header.length; ++i)
 		{
@@ -189,7 +190,7 @@
 				label: 'M(' + data.header[i].replace(' ', '&nbsp;') + ')',
 				lines: {show: true},
 				shadowSize: 1,
-				visible: !visibleseries || cnt in visibleseries,
+				visible: !hasvisibleseries || cnt in visibleseries,
 			});
 
 			cnt++;
@@ -202,7 +203,7 @@
 				label: 'A(' + data.header[i].replace(' ', '&nbsp;') + ')',
 				lines: {show: true},
 				shadowSize: 1,
-				visible: visibleseries && cnt in visibleseries,
+				visible: hasvisibleseries && (cnt in visibleseries),
 			});
 
 			cnt++;
