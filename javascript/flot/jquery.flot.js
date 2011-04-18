@@ -2200,9 +2200,10 @@
                 idxs = [idxs];
             }
 
-            for (var idx = 0; idx < idxs.length; ++idx)
+            for (var i = 0; i < idxs.length; ++i)
             {
-                var elem = placeholder.find('.series_' + idx);
+                var idx = idxs[i];
+                var elem = options.legend.container.find('div[series_idx=' + idx + ']');
 
                 if (visible)
                 {
