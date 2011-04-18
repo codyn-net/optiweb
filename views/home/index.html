@@ -80,6 +80,7 @@
 <script type='text/javascript'>
 	var toggled_on = {};
 	var plots = {};
+	var selectedseries = {};
 
 	function do_select_all(id)
 	{
@@ -109,7 +110,18 @@
 
 		if (toggled_on[id])
 		{
+			if (typeof visibleseries == 'undefined' &&
+			    id in selectedseries)
+			{
+				visibleseries = selectedseries[id];
+			}
+
 			refresh_progress(id, visibleseries);
+		}
+		else
+		{
+			selectedseries[id] = legend_visible(id);
+			delete jobs[id];
 		}
 	}
 
