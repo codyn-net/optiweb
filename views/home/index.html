@@ -65,7 +65,7 @@
 				</div>
 			</td>
 			<td class='legend'>
-				<div style='float: right'><input id='progress_select_all' name='progress_select_all' type='checkbox' onchange='do_select_all(<?= $job->id ?>)'> Select All</div>
+				<div><input id='progress_select_all_<?= $job->id ?>' name='progress_select_all_<?= $job->id ?>' type='checkbox' onchange='do_select_all(<?= $job->id ?>)'> Select All</div>
 				<div class='progress_legend' id='progress_legend_<?= $job->id ?>'>
 				</div>
 			</td>
@@ -83,7 +83,7 @@
 
 	function do_select_all(id)
 	{
-		var val = $('#progress_select_all').attr('checked');
+		var val = $('#progress_select_all_' + id).attr('checked');
 
 		var series = plots[id].getSeries();
 		var ids = [];
