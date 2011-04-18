@@ -166,6 +166,8 @@
         plot.width = function () { return plotWidth; };
         plot.height = function () { return plotHeight; };
         plot.getSeries = function () { return series; };
+        plot.setLegendVisible = setLegendVisible;
+
         plot.offset = function () {
             var o = eventHolder.offset();
             o.left += plotOffset.left;
@@ -2191,30 +2193,43 @@
             return c.toString();
         }
 
-        function toggleLegendButton()
+        function setLegendVisible(idxs, visible)
         {
-            var idx = $(this).attr('series_idx');
-
-            if ($(this).hasClass('legendEnabled'))
+            if (!$.isArray(idxs))
             {
-                $(this).removeClass('legendEnabled');
-                $(this).addClass('legendDisabled');
-
-                $(this).css('backgroundColor', 'transparent');
-
-                series[idx].visible = false;
+                idxs = [idxs];
             }
-            else
+
+            for (var idx = 0; idx < idxs.length; ++idx)
             {
-                $(this).removeClass('legendDisabled');
-                $(this).addClass('legendEnabled');
+                var elem = placeholder.find('.series_' + idx);
 
-                $(this).css('backgroundColor', series[idx].color);
+                if (visible)
+                {
+                    elem.removeClass('legendDisabled');
+                    elem.addClass('legendEnabled');
 
-                series[idx].visible = true;
+                    elem.css('backgroundColor', series[idx].color);
+
+                    series[idx].visible = visible;
+                }
+                else
+                {
+                    elem.removeClass('legendEnabled');
+                    elem.addClass('legendDisabled');
+
+                    elem.css('backgroundColor', 'transparent');
+                    series[idx].visible = visible;
+                }
             }
 
             updateVisibleSeries();
+        }
+
+        function toggleLegendButton()
+        {
+            var idx = $(this).attr('series_idx');
+            setLegendVisible(idx, !$(this).hasClass('legendEnabled'));
         }
 
         function connectLegendButtons(container)

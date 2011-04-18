@@ -65,6 +65,7 @@
 				</div>
 			</td>
 			<td class='legend'>
+				<div style='float: right'><input id='progress_select_all' name='progress_select_all' type='checkbox' onchange='do_select_all(<?= $job->id ?>)'> Select All</div>
 				<div class='progress_legend' id='progress_legend_<?= $job->id ?>'>
 				</div>
 			</td>
@@ -79,6 +80,23 @@
 <script type='text/javascript'>
 	var toggled_on = {};
 	var plots = {};
+
+	function do_select_all(id)
+	{
+		var val = $('#progress_select_all').attr('checked');
+
+		alert(val);
+
+		var series = plots[id].getSeries();
+		var ids = [];
+
+		for (var i = 0; i < series.length; ++i)
+		{
+			ids.push(i);
+		}
+
+		plots[id].setLegendVisible(ids, val);
+	}
 
 	function toggle_description(id, visibleseries)
 	{
