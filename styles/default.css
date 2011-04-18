@@ -221,6 +221,8 @@ div.progress_plot {
 
 div.progress_legend {
 	background-color: #fff;
+	overflow: auto;
+	height: 400px;
 }
 
 table.status tr.long_description td.legendLabel, table.status tr.long_description td.legendColorBox {
