@@ -9,7 +9,7 @@
 	<? } ?>
 	
 	<? foreach ($this->scripts as $script) { ?>
-	<script type='text/javascript' src='javascript/<?= $script ?>.js'></script>
+	<script type='text/javascript' src='<?= $this->resolve_script($script) ?>'></script>
 	<? } ?>
 </head>
 <body>
