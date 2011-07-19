@@ -1,0 +1,18 @@
+<div class='tabs'>
+    <ul id='home_tabs'>
+        <li id='tab_progress' class='selected'><a href='#' onclick='javascript:show_progress()'>Progress</a></li>
+        <li id='tab_plot_matrix'><a href='#' onclick='javascript:show_plot_matrix()'>Plot Matrix</a></li>
+    </ul>
+</div>
+
+<div id='home_inheader'>
+    <input type='button' value='Refresh' onclick='do_refresh();'/>
+    <select name='user_filter' id='user_filter' onchange='do_refresh();'>
+        <option value=''>All Users</option>
+        <? foreach ($this->users as $user) { ?>
+        <option value='<?= $user ?>' <?= $this->user_selected == $user ? 'selected="selected"' : '' ?>'><?= $user ?></option>
+        <? } ?>
+    </select>
+</div>
+
+<!-- vi:ex:ts=4:et -->

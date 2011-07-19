@@ -1,263 +1,364 @@
-<div id="subheader">
-	<div style='float: right;'><a href='history.php'>Show History</a> <input type='button' value='Refresh' onclick='do_refresh();'/> <select name='user_filter' id='user_filter' onchange='do_refresh();'>
-	<option value=''>All Users</option>
-	<? foreach ($this->users as $user) { ?>
-	<option value='<?= $user ?>' <?= $this->user_selected == $user ? 'selected="selected"' : '' ?>'><?= $user ?></option>
-	<? } ?>
-	</select></div>
-</div>
-
 <? if ($this->jobs) { ?>
-<table class='status'>
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>User</th>
-			<th>Started</th>
-			<th>Progress</th>
-			<th></th>
-		</tr>
-	</thead>
-	<? for ($i = 0; $i < count($this->jobs); $i++) { $job = $this->jobs[$i]; ?>
-	<? if ($i != 0) { ?>
-	<tr class='separator'><td class='left right' colspan='5'><div></div></td></tr>
-	<? } ?>
-	<tr class='short_description' onclick='toggle_description(<?= $job->id ?>)'>
-		<td class='name left'><?= $job->name ?></td>
-		<td class='user'><?= $job->user ?></td>
-		<td class='started'><?= english_date($job->started) ?></td>
-		<td class='progress'>
-			<div class='progress'>
-				<img class='progress' src='images/progress.png' height='20px' width='<?= intval($job->progress * 100) ?>%'/>
-			</div>
-		</td>
-		<td class='progress_num right'>
-			<?= number_format($job->progress * 100, 2) ?>&nbsp;%
-		</td>
-	</tr>
-	<tr class='long_description long_description_<?= $job->id ?>'>
-		<td colspan='3' class='left long_description'>
-			<table>
-				<tr>
-					<td class='title'>Priority:</td>
-					<td class='indent'><?= $job->priority ?></td>
-				</tr>
-				<tr>
-					<td class='title'>Tasks:</td>
-					<td class='indent'><span class='taskssuccess'><?= $job->taskssuccess ?></span>/<span class='tasksfailed'><?= $job->tasksfailed ?></span></td>
-				</tr>
-				<tr>
-					<td class='title'>Runtime:</td>
-					<td class='indent'><?= number_format($job->runtime, 2) ?> seconds</td>
-				</tr>
-				<tr>
-					<td class='title'>Duration:</td>
-					<td class='indent'><?= english_duration($job->lastupdate - $job->started) ?></td>
-				</tr>
-			</table>
-		</td>
-		<td colspan='2' class='right outerplot'>
-			<div class='outerplot'>
-			<table class='plot'>
-			<tr>
-			<td class='plot'>
-				<div class='progress_plot' id='progress_<?= $job->id ?>'>
-				</div>
-			</td>
-			<td class='legend'>
-				<div><input id='progress_select_all_<?= $job->id ?>' name='progress_select_all_<?= $job->id ?>' type='checkbox' onchange='do_select_all(<?= $job->id ?>)'> Select All</div>
-				<div class='progress_legend' id='progress_legend_<?= $job->id ?>'>
-				</div>
-			</td>
-			</tr>
-			</table>
-			</div>
-		</td>
-	</tr>
+<table class='status' id='show_progress'>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>User</th>
+            <th>Started</th>
+            <th>Progress</th>
+            <th></th>
+        </tr>
+    </thead>
+    <? for ($i = 0; $i < count($this->jobs); $i++) { $job = $this->jobs[$i]; ?>
+    <? if ($i != 0) { ?>
+    <tr class='separator'><td class='left right' colspan='5'><div></div></td></tr>
+    <? } ?>
+    <tr class='short_description' onclick='toggle_description(<?= $job->id ?>)'>
+        <td class='name left'><?= $job->name ?></td>
+        <td class='user'><?= $job->user ?></td>
+        <td class='started'><?= english_date($job->started) ?></td>
+        <td class='progress'>
+            <div class='progress'>
+                <img class='progress' src='images/progress.png' height='20px' width='<?= intval($job->progress * 100) ?>%'/>
+            </div>
+        </td>
+        <td class='progress_num right'>
+            <?= number_format($job->progress * 100, 2) ?>&nbsp;%
+        </td>
+    </tr>
+    <tr class='long_description long_description_<?= $job->id ?>'>
+        <td colspan='3' class='left long_description'>
+            <table>
+                <tr>
+                    <td class='title'>Priority:</td>
+                    <td class='indent'><?= $job->priority ?></td>
+                </tr>
+                <tr>
+                    <td class='title'>Tasks:</td>
+                    <td class='indent'><span class='taskssuccess'><?= $job->taskssuccess ?></span>/<span class='tasksfailed'><?= $job->tasksfailed ?></span></td>
+                </tr>
+                <tr>
+                    <td class='title'>Runtime:</td>
+                    <td class='indent'><?= number_format($job->runtime, 2) ?> seconds</td>
+                </tr>
+                <tr>
+                    <td class='title'>Duration:</td>
+                    <td class='indent'><?= english_duration($job->lastupdate - $job->started) ?></td>
+                </tr>
+            </table>
+        </td>
+        <td colspan='2' class='right outerplot'>
+            <div class='outerplot'>
+            <table class='plot'>
+            <tr>
+            <td class='plot'>
+                <div class='progress_plot' id='progress_<?= $job->id ?>'>
+                </div>
+            </td>
+            <td class='legend'>
+                <div><input id='progress_select_all_<?= $job->id ?>' name='progress_select_all_<?= $job->id ?>' type='checkbox' onchange='do_select_all(<?= $job->id ?>)'> Select All</div>
+                <div class='progress_legend' id='progress_legend_<?= $job->id ?>'>
+                </div>
+            </td>
+            </tr>
+            </table>
+            </div>
+        </td>
+    </tr>
 
-	<? } ?>
+    <? } ?>
 </table>
+<table id='show_plot_matrix'>
+<?
+    $cnt = count($this->jobs);
+    $maxcol = 3;
+
+    $rows = intval(ceil($cnt / $maxcol));
+    $cols = $cnt < $maxcol ? $cnt : $maxcol;
+    $i = 0;
+
+    for ($r = 0; $r < $rows; $r++)
+    {
+?>
+    <tr>
+<?
+        for ($c = 0; $c < $cols; $c++)
+        {
+            if ($i >= $cnt)
+            {
+                break;
+            }
+
+?>
+        <td>
+            <div class='progress_num'>
+                <?= number_format($this->jobs[$i]->progress * 100, 2) ?>&nbsp;%
+            </div>
+            <div class='progress'>
+               <img class='progress' src='images/progress.png' height='20px' width='<?= intval($this->jobs[$i]->progress * 100) ?>%'/>
+            </div>
+            <div class='outerplot'>
+            <table class='plot'>
+            <tr>
+            <td class='plot'>
+                <div class='progress_plot' id='mat_progress_<?= $this->jobs[$i]->id ?>'>
+                </div>
+            </td>
+            </tr>
+            </table>
+            </div>
+            <div class='plot_title'><?= $this->jobs[$i]->name ?></div>
+        </td>
+<?
+            $i++;
+        }
+?>
+    </tr>
+<?
+    }
+?>
+</table>
+
 <script type='text/javascript'>
-	var toggled_on = {};
-	var plots = {};
-	var selectedseries = {};
+    var toggled_on = {};
+    var plots = {};
+    var selectedseries = {};
+    var current_tab;
 
-	function do_select_all(id)
-	{
-		var val = $('#progress_select_all_' + id).attr('checked');
+    function do_select_all(id)
+    {
+        var val = $('#progress_select_all_' + id).attr('checked');
 
-		var series = plots[id].getSeries();
-		var ids = [];
+        var series = plots[id].getSeries();
+        var ids = [];
 
-		for (var i = 0; i < series.length; ++i)
-		{
-			ids.push(i);
-		}
+        for (var i = 0; i < series.length; ++i)
+        {
+            ids.push(i);
+        }
 
-		plots[id].setLegendVisible(ids, val);
-	}
+        plots[id].setLegendVisible(ids, val);
+    }
 
-	function toggle_description(id, visibleseries)
-	{
-		var ret = $('tr.long_description_' + id);
+    function toggle_description(id, visibleseries)
+    {
+        var ret = $('tr.long_description_' + id);
 
-		toggled_on[id] = !toggled_on[id];
-		disp = toggled_on[id] ? 'table-row' : '';
+        toggled_on[id] = !toggled_on[id];
+        disp = toggled_on[id] ? 'table-row' : '';
 
-		ret.each(function (idx, item) {
-			item.style.display = disp;
-		});
+        ret.each(function (idx, item) {
+            item.style.display = disp;
+        });
 
-		if (toggled_on[id])
-		{
-			if (typeof visibleseries == 'undefined' &&
-			    id in selectedseries)
-			{
-				visibleseries = selectedseries[id];
-			}
+        if (toggled_on[id])
+        {
+            if (typeof visibleseries == 'undefined' &&
+                id in selectedseries)
+            {
+                visibleseries = selectedseries[id];
+            }
 
-			refresh_progress(id, visibleseries);
-		}
-		else
-		{
-			selectedseries[id] = legend_visible(id);
-			delete jobs[id];
-		}
-	}
+            refresh_progress(id, "", visibleseries);
+        }
+        else
+        {
+            selectedseries[id] = legend_visible(id);
+            delete plots[id];
+        }
+    }
 
-	<? foreach ($this->jobs as $job) { ?>
-	toggled_on[<?= $job->id ?>] = false;
-	<? } ?>
+    <? foreach ($this->jobs as $job) { ?>
+    toggled_on[<?= $job->id ?>] = false;
+    <? } ?>
 
-	$(window).load(function() {
-		<? foreach ($this->jobs as $job) { ?>
-		<? if ($job->toggled) { ?>
-				toggle_description(<?= $job->id ?>, [<?= implode(', ', $job->toggled) ?>]);
-		<? }
-		} ?>
-	});
+    $(window).load(function() {
+        current_tab = '<?= $_GET["show"] ? $_GET["show"] : "progress" ?>';
 
-	function legend_visible(id)
-	{
-		var series = plots[id].getSeries();
-		var visible = [];
+        if (current_tab == 'progress')
+        {
+            show_progress();
+        }
+        else
+        {
+            show_plot_matrix();
+        }
 
-		for (var i = 0; i < series.length; ++i)
-		{
-			if (series[i].visible)
-			{
-				visible.push(i);
-			}
-		}
+        <? foreach ($this->jobs as $job) { ?>
+        <? if ($job->toggled) { ?>
+                show_job(<?= $job->id ?>, [<?= implode(', ', $job->toggled) ?>]);
+        <? }
+        } ?>
+    });
 
-		return visible;
-	}
+    function show_job(id, visibleseries)
+    {
+        selectedseries[id] = visibleseries;
 
-	function do_refresh()
-	{
-		var t = [];
+        if (current_tab == 'progress')
+        {
+            toggle_description(id, visibleseries);
+        }
+        else
+        {
+            refresh_progress(id, 'mat', visibleseries);
+        }
+    }
 
-		$.each(toggled_on, function (key, value) {
-			if (value)
-			{
-				visible = $.map(legend_visible(key), function (x) { return x.toString(); });
+    function legend_visible(id)
+    {
+        var series = plots[id].getSeries();
+        var visible = [];
 
-				t.push(key + ":" + visible.join(':'));
-			}
+        for (var i = 0; i < series.length; ++i)
+        {
+            if (series[i].visible)
+            {
+                visible.push(i);
+            }
+        }
 
-		});
+        return visible;
+    }
 
-		var userfilter = $('#user_filter').val();
+    function do_refresh()
+    {
+        var t = [];
 
-		document.location = 'index.php?toggled=' + encodeURIComponent(t.join(',')) + '&user_filter=' + encodeURIComponent(userfilter);
-	}
+        $.each(toggled_on, function (key, value) {
+            if (value)
+            {
+                visible = $.map(legend_visible(key), function (x) { return x.toString(); });
 
-	var previousPoint = null;
+                t.push(key + ":" + visible.join(':'));
+            }
 
-	function showTooltip(x, y, s)
-	{
-		$('<div id="tooltip">' + s + '</div>').css( {
-			position: 'absolute',
-			top: y + 5,
-			left: x + 5,
-			border: '1px solid #f0cd79',
-			padding: '2px',
-			'background-color': '#fffde6',
-			opacity: 0.80
-		}).appendTo("body");
-	}
+        });
 
-	function make_tooltip(event, pos, item) {
-		if (item)
-		{
-			if (previousPoint != item.datapoint)
-			{
-				previousPoint = item.datapoint;
-				$("#tooltip").remove();
+        var userfilter = $('#user_filter').val();
 
-				showTooltip(item.pageX, item.pageY, item.series.label + " at " + item.datapoint[0] + ": " + item.datapoint[1]);
-			}
-		}
-		else
-		{
-			$("#tooltip").remove();
-			previousPoint = null;
-		}
-	}
+        document.location = 'index.php?toggled=' + encodeURIComponent(t.join(',')) + '&user_filter=' + encodeURIComponent(userfilter) + '&show=' + encodeURIComponent(current_tab);
+    }
 
-	function redraw_progress(id, data, visibleseries)
-	{
-		var plotdata = [];
-		var cnt = 0;
-		var hasvisibleseries = typeof visibleseries != 'undefined';
+    var previousPoint = null;
 
-		for (var i = 0; i < data.header.length; ++i)
-		{
-			plotdata.push({
-				data: data.best[i],
-				label: 'M(' + data.header[i].replace(' ', '&nbsp;') + ')',
-				lines: {show: true},
-				shadowSize: 1,
-				visible: !hasvisibleseries || $.inArray(cnt, visibleseries) != -1,
-			});
+    function showTooltip(x, y, s)
+    {
+        $('<div id="tooltip">' + s + '</div>').css( {
+            position: 'absolute',
+            top: y + 5,
+            left: x + 5,
+            border: '1px solid #f0cd79',
+            padding: '2px',
+            'background-color': '#fffde6',
+            opacity: 0.80
+        }).appendTo("body");
+    }
 
-			cnt++;
-		}
+    function make_tooltip(event, pos, item) {
+        if (item)
+        {
+            if (previousPoint != item.datapoint)
+            {
+                previousPoint = item.datapoint;
+                $("#tooltip").remove();
 
-		for (var i = 0; i < data.header.length; ++i)
-		{
-			plotdata.push({
-				data: data.mean[i],
-				label: 'A(' + data.header[i].replace(' ', '&nbsp;') + ')',
-				lines: {show: true},
-				shadowSize: 1,
-				visible: hasvisibleseries && $.inArray(cnt, visibleseries) != -1,
-			});
+                showTooltip(item.pageX, item.pageY, item.series.label + " at " + item.datapoint[0] + ": " + item.datapoint[1]);
+            }
+        }
+        else
+        {
+            $("#tooltip").remove();
+            previousPoint = null;
+        }
+    }
 
-			cnt++;
-		}
+    function redraw_progress(id, prefix, data, visibleseries)
+    {
+        var plotdata = [];
+        var cnt = 0;
+        var hasvisibleseries = typeof visibleseries != 'undefined';
 
-		var container = $("#progress_" + id);
+        for (var i = 0; i < data.header.length; ++i)
+        {
+            plotdata.push({
+                data: data.best[i],
+                label: 'M(' + data.header[i].replace(' ', '&nbsp;') + ')',
+                lines: {show: true},
+                shadowSize: 1,
+                visible: !hasvisibleseries || $.inArray(cnt, visibleseries) != -1,
+            });
 
-		plots[id] = $.plot(container, plotdata, {
-			grid: {hoverable: true, clickable: true},
-			legend: {position: 'se', container: $("#progress_legend_" + id), clickable: true},
-		});
+            cnt++;
+        }
 
-		container.bind('plothover', make_tooltip);
-	}
+        for (var i = 0; i < data.header.length; ++i)
+        {
+            plotdata.push({
+                data: data.mean[i],
+                label: 'A(' + data.header[i].replace(' ', '&nbsp;') + ')',
+                lines: {show: true},
+                shadowSize: 1,
+                visible: hasvisibleseries && $.inArray(cnt, visibleseries) != -1,
+            });
 
-	function refresh_progress(id, visibleseries)
-	{
-		jQuery.getJSON('progress.php',
-			{id: id},
+            cnt++;
+        }
 
-			function (data) {
-				redraw_progress(id, data, visibleseries);
-			}
-		);
-	}
+        var container = $("#" + prefix + "progress_" + id);
+
+        plots[id] = $.plot(container, plotdata, {
+            grid: {hoverable: true, clickable: true},
+            legend: {position: 'se', container: $("#" + prefix + "progress_legend_" + id), clickable: true},
+        });
+
+        container.bind('plothover', make_tooltip);
+    }
+
+    function refresh_progress(id, prefix, visibleseries)
+    {
+        jQuery.getJSON('progress.php',
+            {id: id},
+
+            function (data) {
+                redraw_progress(id, prefix, data, visibleseries);
+            }
+        );
+    }
+
+    function select_tab(name)
+    {
+        $('#home_tabs li').removeClass('selected');
+        $('#home_tabs li#tab_' + name).addClass('selected');
+        current_tab = name;
+    }
+
+    function show_progress()
+    {
+        select_tab('progress');
+        $('#show_plot_matrix').hide();
+        $('#show_progress').show();
+    }
+
+    function build_plot_matrix()
+    {
+        <? foreach ($this->jobs as $job) { ?>
+        refresh_progress(<?= $job->id ?>, "mat_", selectedseries[<?= $job->id ?>]);
+        <? } ?>
+    }
+
+    function show_plot_matrix()
+    {
+        select_tab('plot_matrix');
+
+        $('#show_progress').hide();
+        $('#show_plot_matrix').show();
+
+        build_plot_matrix();
+    }
 </script>
 <? } else { ?>
 <p>There are no jobs running at the moment.</p>
 <? } ?>
+
+<!-- vi:ex:ts=4:et -->

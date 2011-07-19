@@ -10,6 +10,7 @@ div#main {
 }
 
 div#header {
+	position: relative;
 	background-color: #333;
 	height: 100px;
 	color: #fff;
@@ -149,10 +150,20 @@ table.status th {
 	text-align: left;
 }
 
-table.status div.progress {
+table#show_plot_matrix div.progress_num {
+	float: right;
+	font-size: 0.8em;
+	padding-top: 2px;
+	padding-right: 2px;
+}
+
+table.status div.progress, table#show_plot_matrix div.progress {
 	border: 1px solid #6b6b6b;
 	height: 20px;
+}
 
+table#show_plot_matrix div.progress {
+	margin-bottom: 3px;
 }
 
 table.status tr.long_description td.left
@@ -165,9 +176,6 @@ table.status td.left {
 
 table.status td.right {
 	border-right: 1px solid #333;
-}
-
-table.status div.progress img.progress {
 }
 
 table.status td.title {
@@ -231,4 +239,81 @@ table.status tr.long_description td.legendLabel, table.status tr.long_descriptio
 
 table.plot tr td {
 	vertical-align: top;
+}
+
+div#home_inheader {
+	position: absolute;
+	right: 0;
+	bottom: 0
+}
+
+div#header div.tabs {
+	position: absolute;
+	left: 10px;
+	bottom: 2px;
+}
+
+div.tabs ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+div.tabs ul li {
+	float: left;
+	margin-right: 5px;
+}
+
+div.tabs ul a {
+	color: #fff;
+	text-decoration: none;
+	background-color: #444;
+	padding: 5px 10px 2px 10px;
+	border-radius: 8px 8px 0px 0px;
+	text-shadow: 1px 1px 1px #000;
+	border-bottom: 0px;
+	-webkit-transition: background 100ms linear;
+}
+
+div.tabs li.selected a {
+	background-color: #111;
+}
+
+div.tabs ul a:hover {
+	background-color: #111;
+}
+
+table#show_plot_matrix {
+	display: none;
+	width: 100%;
+}
+
+table#show_plot_matrix td {
+	position: relative;
+	height: 200px;
+}
+
+table#show_plot_matrix div.progress_plot {
+	background-color: #fff;
+	height: 200px;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+table#show_plot_matrix {
+	border-spacing: 0;
+}
+
+table#show_plot_matrix table.plot {
+	border-color: #aaa;
+}
+
+div.plot_title {
+	text-align: center;
+	margin-bottom: 10px;
+	font-weight: bold;
+	font-size: 0.8em;
 }
