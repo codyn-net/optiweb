@@ -124,6 +124,7 @@
     var plots = {};
     var selectedseries = {};
     var current_tab;
+    var first_series = null;
 
     function do_select_all(id)
     {
@@ -306,6 +307,15 @@
         }
 
         var container = $("#" + prefix + "progress_" + id);
+
+        if (first_series != null)
+        {
+            container.width(first_series.width());
+        }
+        else
+        {
+            first_series = container;
+        }
 
         plots[id] = $.plot(container, plotdata, {
             grid: {hoverable: true, clickable: true},
